@@ -10,3 +10,9 @@ output "codedeploy_app_name" {
 output "codedeploy_deploymentgroup_name" {
   value = aws_codedeploy_deployment_group.codedeploy_deploymentgroup.deployment_group_name
 }
+output "alb_dns_name" {
+  value = aws_lb.jnv_ecs_service_alb[0].dns_name
+}
+output "alb_zoneid" {
+  value = aws_lb.jnv_ecs_service_alb[0].zone_id
+}

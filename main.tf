@@ -15,7 +15,7 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deploymentgroup" {
   deployment_config_name = "CodeDeployDefault.ECSAllAtOnce"
   auto_rollback_configuration {
     enabled = var.auto_rollback_enabled
-    events  = ["${var.auto_rollback_events}"]
+    events  = var.auto_rollback_events
   }
 
   blue_green_deployment_config {
@@ -62,25 +62,25 @@ resource "aws_codedeploy_deployment_group" "codedeploy_deploymentgroup" {
       # The path used by a load balancer to route production traffic when an Amazon ECS deployment is complete.
       prod_traffic_route {
         listener_arns = [
-          aws_lb_listener.jnv_ecs_service_alb_prod_listener.arn
+          aws_lb_listener.jnv_ecs_service_alb_prod_listener[0].arn
         ]
       }
 
       # One pair of target groups. One is associated with the original task set.
       # The second target is associated with the task set that serves traffic after the deployment completes.
       target_group {
-        name = aws_lb_target_group.jnv_ecs_service_alb_blue_tg.name
+        name = aws_lb_target_group.jnv_ecs_service_alb_blue_tg[0].name
       }
 
       target_group {
-        name = aws_lb_target_group.jnv_ecs_service_alb_green_tg.name
+        name = aws_lb_target_group.jnv_ecs_service_alb_green_tg[0].name
       }
 
       # An optional path used by a load balancer to route test traffic after an Amazon ECS deployment.
       # Validation can happen while test traffic is served during a deployment.
       test_traffic_route {
         listener_arns = [
-          aws_lb_listener.jnv_ecs_service_alb_test_listener.arn
+          aws_lb_listener.jnv_ecs_service_alb_test_listener[0].arn
         ]
       }
     }
@@ -136,8 +136,8 @@ resource "aws_lb" "jnv_ecs_service_alb" {
   name               = join("-", ["${var.jnv_project}", "${var.jnv_region}", lower("${var.application_name}"), "alb", "${var.jnv_environment}"])
   internal           = var.internal_lb
   load_balancer_type = "application"
-  security_groups    = [aws_security_group.jnv_ecs_service_alb_sg.id]
-  subnets            = var.internal_lb == false ? var.subnet_ids : var.public_subnet_ids
+  security_groups    = [aws_security_group.jnv_ecs_service_alb_sg[0].id]
+  subnets            = var.internal_lb == true ? var.subnet_ids : var.public_subnet_ids
 
   enable_deletion_protection = true
 }
@@ -146,11 +146,11 @@ resource "aws_lb_listener" "jnv_ecs_service_alb_prod_listener" {
   count = var.need_loadbalancer ? 1 : 0
 
   alpn_policy       = null
-  certificate_arn   = null
-  load_balancer_arn = aws_lb.jnv_ecs_service_alb.arn
+  certificate_arn   = var.alb_certificate_arn
+  load_balancer_arn = aws_lb.jnv_ecs_service_alb[0].arn
   port              = 443
   protocol          = "HTTPS"
-  ssl_policy        = null
+  ssl_policy        = "ELBSecurityPolicy-2016-08"
   tags              = {}
   tags_all          = {}
   default_action {
@@ -164,7 +164,7 @@ resource "aws_lb_listener" "jnv_ecs_service_alb_test_listener" {
 
   alpn_policy       = null
   certificate_arn   = null
-  load_balancer_arn = aws_lb.jnv_ecs_service_alb.arn
+  load_balancer_arn = aws_lb.jnv_ecs_service_alb[0].arn
   port              = 8080
   protocol          = "HTTP"
   ssl_policy        = null
@@ -346,7 +346,7 @@ resource "aws_security_group" "jnv_ecs_service_sg" {
       to_port     = 8080
       protocol    = "tcp"
       security_groups = [
-        aws_security_group.jnv_ecs_service_alb_sg.id
+        aws_security_group.jnv_ecs_service_alb_sg[0].id
       ]
     }
   }
@@ -397,7 +397,7 @@ resource "aws_ecs_service" "jnv_ecs_service" {
       container_name   = join("-", ["${var.jnv_project}", "${var.jnv_region}", lower("${var.application_name}"), "container", "${var.jnv_environment}"])
       container_port   = var.container_port
       elb_name         = null
-      target_group_arn = aws_lb_target_group.jnv_ecs_service_alb_blue_tg.arn
+      target_group_arn = aws_lb_target_group.jnv_ecs_service_alb_blue_tg[0].arn
     }
   }
   network_configuration {
@@ -411,7 +411,9 @@ resource "aws_ecs_service" "jnv_ecs_service" {
 
   lifecycle {
     ignore_changes = [
+      platform_version,
       task_definition,
+      deployment_circuit_breaker,
       desired_count,
       load_balancer
     ]

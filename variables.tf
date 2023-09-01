@@ -30,6 +30,9 @@ variable "internal_lb" {
 variable "container_port" {
   default = 8080
 }
+variable "alb_certificate_arn" {
+  default = "arn:aws:acm:ap-northeast-2:414779424500:certificate/ec2d17d6-ccc5-4b0a-8727-c2382943ec1c"
+}
 
 variable "auto_rollback_enabled" {
   default     = true

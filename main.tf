@@ -8,7 +8,7 @@ resource "aws_codedeploy_app" "codedeploy_app" {
   name             = join("-", ["${var.jnv_project}", "${var.jnv_region}", lower("${var.application_name}"), "ecs-svc", "${var.jnv_environment}"])
 }
 
-resource "aws_codedeploy_deployment_group" "default" {
+resource "aws_codedeploy_deployment_group" "codedeploy_deploymentgroup" {
   app_name               = aws_codedeploy_app.codedeploy_app.name
   deployment_group_name  = join("-", ["${var.jnv_project}", "${var.jnv_region}", lower("${var.application_name}"), "ecs-svc", "${var.jnv_environment}"])
   service_role_arn       = "arn:aws:iam::${local.account_id}:role/CodeDeployServiceRole"

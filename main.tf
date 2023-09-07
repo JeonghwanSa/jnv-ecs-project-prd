@@ -157,6 +157,12 @@ resource "aws_lb_listener" "jnv_ecs_service_alb_prod_listener" {
     target_group_arn = aws_lb_target_group.jnv_ecs_service_alb_blue_tg[0].arn
     type             = "forward"
   }
+
+  lifecycle {
+    ignore_changes = [
+      default_action
+    ]
+  }
 }
 
 resource "aws_lb_listener" "jnv_ecs_service_alb_test_listener" {

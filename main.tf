@@ -191,7 +191,7 @@ resource "aws_lb_target_group" "jnv_ecs_service_alb_blue_tg" {
   lambda_multi_value_headers_enabled = null
   load_balancing_algorithm_type      = "round_robin"
   load_balancing_cross_zone_enabled  = "use_load_balancer_configuration"
-  name                               = join("-", ["${var.jnv_project}", "${var.jnv_region}", lower("${var.application_name}"), "blue-tg", "${var.jnv_environment}"])
+  name                               = join("-", ["${var.jnv_project}", lower("${var.application_name}"), "tg1", "${var.jnv_environment}"])
   name_prefix                        = null
   port                               = 80
   preserve_client_ip                 = null
@@ -231,7 +231,7 @@ resource "aws_lb_target_group" "jnv_ecs_service_alb_green_tg" {
   lambda_multi_value_headers_enabled = null
   load_balancing_algorithm_type      = "round_robin"
   load_balancing_cross_zone_enabled  = "use_load_balancer_configuration"
-  name                               = join("-", ["${var.jnv_project}", "${var.jnv_region}", lower("${var.application_name}"), "green-tg", "${var.jnv_environment}"])
+  name                               = join("-", ["${var.jnv_project}", lower("${var.application_name}"), "tg2", "${var.jnv_environment}"])
   name_prefix                        = null
   port                               = 80
   preserve_client_ip                 = null

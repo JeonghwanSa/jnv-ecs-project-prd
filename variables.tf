@@ -34,6 +34,10 @@ variable "alb_certificate_arn" {
   default = "arn:aws:acm:ap-northeast-2:414779424500:certificate/ec2d17d6-ccc5-4b0a-8727-c2382943ec1c"
 }
 
+variable "alb_healthcheck_interval" {
+  default = 30
+}
+
 variable "auto_rollback_enabled" {
   default     = true
   type        = string

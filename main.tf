@@ -206,7 +206,7 @@ resource "aws_lb_target_group" "jnv_ecs_service_alb_blue_tg" {
   health_check {
     enabled             = true
     healthy_threshold   = 5
-    interval            = 30
+    interval            = var.alb_healthcheck_interval
     matcher             = "200"
     path                = "/actuator/health"
     port                = "traffic-port"
@@ -246,7 +246,7 @@ resource "aws_lb_target_group" "jnv_ecs_service_alb_green_tg" {
   health_check {
     enabled             = true
     healthy_threshold   = 5
-    interval            = 30
+    interval            = var.alb_healthcheck_interval
     matcher             = "200"
     path                = "/actuator/health"
     port                = "traffic-port"

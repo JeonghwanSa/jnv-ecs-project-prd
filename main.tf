@@ -204,15 +204,15 @@ resource "aws_lb_target_group" "jnv_ecs_service_alb_blue_tg" {
   target_type                        = "ip"
   vpc_id                             = var.vpc_id
   health_check {
-    enabled             = true
-    healthy_threshold   = 5
-    interval            = var.alb_healthcheck_interval
-    matcher             = "200"
-    path                = "/actuator/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 2
+    enabled             = var.tg_health_check.enabled
+    healthy_threshold   = var.tg_health_check.healthy_threshold
+    interval            = var.tg_health_check.interval
+    matcher             = var.tg_health_check.matcher
+    path                = var.tg_health_check.path
+    port                = var.tg_health_check.port
+    protocol            = var.tg_health_check.protocol
+    timeout             = var.tg_health_check.timeout
+    unhealthy_threshold = var.tg_health_check.unhealthy_threshold
   }
   stickiness {
     cookie_duration = 86400
@@ -244,15 +244,15 @@ resource "aws_lb_target_group" "jnv_ecs_service_alb_green_tg" {
   target_type                        = "ip"
   vpc_id                             = var.vpc_id
   health_check {
-    enabled             = true
-    healthy_threshold   = 5
-    interval            = var.alb_healthcheck_interval
-    matcher             = "200"
-    path                = "/actuator/health"
-    port                = "traffic-port"
-    protocol            = "HTTP"
-    timeout             = 5
-    unhealthy_threshold = 2
+    enabled             = var.tg_health_check.enabled
+    healthy_threshold   = var.tg_health_check.healthy_threshold
+    interval            = var.tg_health_check.interval
+    matcher             = var.tg_health_check.matcher
+    path                = var.tg_health_check.path
+    port                = var.tg_health_check.port
+    protocol            = var.tg_health_check.protocol
+    timeout             = var.tg_health_check.timeout
+    unhealthy_threshold = var.tg_health_check.unhealthy_threshold
   }
   stickiness {
     cookie_duration = 86400

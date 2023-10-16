@@ -34,8 +34,30 @@ variable "alb_certificate_arn" {
   default = "arn:aws:acm:ap-northeast-2:414779424500:certificate/ec2d17d6-ccc5-4b0a-8727-c2382943ec1c"
 }
 
-variable "alb_healthcheck_interval" {
-  default = 30
+variable "tg_health_check" {
+  type = object({
+    enabled             = bool
+    healthy_threshold   = number
+    interval            = number
+    matcher             = string
+    path                = string
+    port                = string
+    protocol            = string
+    timeout             = number
+    unhealthy_threshold = number
+  })
+
+  default = {
+    enabled             = true
+    healthy_threshold   = 5
+    interval            = 30
+    matcher             = "200"
+    path                = "/actuator/health"
+    port                = "traffic-port"
+    protocol            = "HTTP"
+    timeout             = 5
+    unhealthy_threshold = 2
+  }
 }
 
 variable "auto_rollback_enabled" {

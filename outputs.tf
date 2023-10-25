@@ -16,3 +16,6 @@ output "alb_dns_name" {
 output "alb_zoneid" {
   value = aws_lb.jnv_ecs_service_alb[0].zone_id
 }
+output "alb_sg_id" {
+  value = aws_security_group.jnv_ecs_service_alb_sg[0].id
+}
